@@ -1,75 +1,75 @@
 const db = require("../database/models");
 
 const taskController = {
-
     getAllTasks: async (req, res) => {
         try {
-            // Obtener todas las tareas de la base de datos
+            // Retrieve all tasks from the database
             const tasks = await db.Task.findAll();
-            // Si no se encontraron tareas, enviar una respuesta con código 404
+            // If no tasks were found, send a 404 response
             if (!tasks || tasks.length === 0) {
-                return res.status(404).json({ message: 'No se encontraron tareas.' });
+                return res.status(404).json({ message: 'No tasks found.' });
             }
-            // Enviar las tareas encontradas como respuesta al cliente
+            // Send the found tasks as a response to the client
             res.status(200).json(tasks);
         } catch (error) {
-            // Si ocurre algún error durante la consulta a la base de datos, enviar una respuesta con código 500
-            console.error('Error al obtener las tareas:', error);
-            res.status(500).json({ message: 'Error al obtener las tareas. Por favor, inténtelo de nuevo más tarde.' });
+            // If an error occurs during the database query, send a 500 response
+            console.error('Error retrieving tasks:', error);
+            res.status(500).json({ message: 'Error retrieving tasks. Please try again later.' });
         }
     },
 
     getTaskById: async (req, res) => {
         try {
-            //Obtener parametro del request
+            // Get the task ID from the request parameters
             const taskId = req.params.id;
-            //Busqueda de la tarea especifica
+            // Find the specific task
             const task = await db.Task.findByPk(taskId);
-            //Si no se encuentra tarea, enviar una respuesta con código 404
+            // If the task is not found, send a 404 response
             if (!task) {
-                return res.status(404).json({ message: 'No se encontró la tarea con el ID proporcionado.' });
+                return res.status(404).json({ message: 'Task not found with the provided ID.' });
             }
-            // Enviar la tarea encontrada como respuesta al cliente
+            // Send the found task as a response to the client
             res.status(200).json(task);
         } catch (error) {
-            // Si ocurre algún error durante la consulta a la base de datos, enviar una respuesta con código 500
-            console.error('Error al obtener la tarea:', error);
-            res.status(500).json({ message: 'Error al obtener la tarea. Por favor, inténtelo de nuevo más tarde.' });
+            // If an error occurs during the database query, send a 500 response
+            console.error('Error retrieving task:', error);
+            res.status(500).json({ message: 'Error retrieving task. Please try again later.' });
         }
     },
 
     createTask: async (req, res) => {
-        // Iniciar una transacción
+        // Start a transaction
         const t = await db.sequelize.transaction();
 
         try {
-            // Obtener los datos de la solicitud
+            // Get the data from the request
             const { title, description, dueDate, status } = req.body;
+            const userId = req.userId; // Get the userId from the req object
 
-            // Crear la tarea en la base de datos
+            // Create the task in the database
             const newTask = await db.Task.create(
-                { title, description, dueDate, status, userId: 1 },
+                { title, description, dueDate, status, userId },
                 { transaction: t }
             );
 
-            // Commit de la transacción
+            // Commit the transaction
             await t.commit();
 
-            // Enviar la nueva tarea como respuesta al cliente
+            // Send the new task as a response to the client
             res.status(201).json(newTask);
         } catch (error) {
-            // Rollback de la transacción en caso de error
+            // Rollback the transaction in case of error
             await t.rollback();
 
-            console.error('Error al crear la tarea:', error);
-            res.status(500).json({ message: 'Error al crear la tarea. Por favor, inténtelo de nuevo más tarde.' });
+            console.error('Error creating task:', error);
+            res.status(500).json({ message: 'Error creating task. Please try again later.' });
         }
     },
 
     updateTask: async (req, res) => {
         const taskId = req.params.id;
 
-        // Iniciar una transacción
+        // Start a transaction
         const t = await db.sequelize.transaction();
 
         try {
@@ -77,30 +77,30 @@ const taskController = {
 
             if (!task) {
                 await t.rollback();
-                return res.status(404).json({ message: 'No se encontró la tarea con el ID proporcionado.' });
+                return res.status(404).json({ message: 'Task not found with the provided ID.' });
             }
 
-            // Actualizar la tarea con los nuevos datos parciales dentro de la transacción
+            // Update the task with the new partial data within the transaction
             await task.update(req.body, { transaction: t });
 
-            // Commit de la transacción
+            // Commit the transaction
             await t.commit();
 
-            res.status(200).json({ message: 'Tarea actualizada correctamente.' });
+            res.status(200).json({ message: 'Task updated successfully.' });
         } catch (error) {
-            // Rollback de la transacción en caso de error
+            // Rollback the transaction in case of error
             await t.rollback();
 
-            console.error('Error al actualizar la tarea:', error);
-            res.status(500).json({ message: 'Error al actualizar la tarea. Por favor, inténtelo de nuevo más tarde.' });
+            console.error('Error updating task:', error);
+            res.status(500).json({ message: 'Error updating task. Please try again later.' });
         }
     },
 
-    // Método para eliminar una tarea existente
+    // Method to delete an existing task
     deleteTask: async (req, res) => {
         const taskId = req.params.id;
 
-        // Iniciar una transacción
+        // Start a transaction
         const t = await db.sequelize.transaction();
 
         try {
@@ -108,25 +108,24 @@ const taskController = {
 
             if (!task) {
                 await t.rollback();
-                return res.status(404).json({ message: 'No se encontró la tarea con el ID proporcionado.' });
+                return res.status(404).json({ message: 'Task not found with the provided ID.' });
             }
 
-            // Eliminar la tarea de la base de datos dentro de la transacción
+            // Delete the task from the database within the transaction
             await task.destroy({ transaction: t });
 
-            // Commit de la transacción
+            // Commit the transaction
             await t.commit();
 
-            res.status(200).json({ message: 'Tarea eliminada correctamente.' });
+            res.status(200).json({ message: 'Task deleted successfully.' });
         } catch (error) {
-            // Rollback de la transacción en caso de error
+            // Rollback the transaction in case of error
             await t.rollback();
 
-            console.error('Error al eliminar la tarea:', error);
-            res.status(500).json({ message: 'Error al eliminar la tarea. Por favor, inténtelo de nuevo más tarde.' });
+            console.error('Error deleting task:', error);
+            res.status(500).json({ message: 'Error deleting task. Please try again later.' });
         }
     }
-
 };
 
 module.exports = taskController;

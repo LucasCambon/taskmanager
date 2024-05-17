@@ -7,10 +7,10 @@ const app = express();
 
 app.use(express.json());
 
-// Puerto de escucha
+// Listening port
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Servidor escuchando en el puerto ${PORT}`);
+  console.log(`Server listening on port ${PORT}`);
 });
 
 app.use('/api/tasks', taskRoutes);

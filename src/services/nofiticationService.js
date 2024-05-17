@@ -3,11 +3,10 @@ const db = require("../database/models");
 const nodemailer = require('nodemailer');
 const twilio = require('twilio');
 
-// Configura Twilio
+// Configure Twilio
 const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 
-
-// Obtener tareas cercanas
+// Get nearby tasks
 async function getNearbyTasks() {
     try {
         // Calculate the current date and the deadline date (3 days from today)
@@ -32,7 +31,7 @@ async function getNearbyTasks() {
     }
 }
 
-// Enviar correo electrónico
+// Send email
 async function sendEmail(to, subject, body) {
     try {
         // Create a transporter object using the default SMTP transport
@@ -62,24 +61,23 @@ async function sendEmail(to, subject, body) {
     }
 }
 
-// Enviar mensaje de WhatsApp
+// Send WhatsApp message
 async function sendWhatsAppMessage(to, body) {
     try {
-        // Enviar el mensaje de WhatsApp
+        // Send the WhatsApp message
         await client.messages.create({
             from: `whatsapp:+14155238886`,
             to: `whatsapp:${to}`,
             body: body
         });
-        console.log('Mensaje de WhatsApp enviado correctamente');
+        console.log('WhatsApp message sent successfully');
     } catch (error) {
-        console.error('Error al enviar mensaje de WhatsApp:', error);
+        console.error('Error sending WhatsApp message:', error);
         throw error;
     }
 }
 
-
-// Marcar tarea como notificada
+// Mark task as notified
 async function markTaskAsNotified(taskId) {
     try {
         // Find the task by its ID

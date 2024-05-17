@@ -1,13 +1,13 @@
 const cron = require('node-cron');
 const { getNearbyTasks, sendEmail, sendWhatsAppMessage, markTaskAsNotified } = require('./nofiticationService');
 
-// Definir la tarea programada
+// Define the scheduled task
 const scheduledTask = async () => {
     try {
-        // Obtener tareas cercanas que necesitan ser notificadas
+        // Get nearby tasks that need to be notified
         const tasks = await getNearbyTasks();
 
-        // Iterar sobre las tareas y enviar notificaciones
+        // Iterate over the tasks and send notifications
         for (const task of tasks) {
             await sendEmail('lucas.j.cambon@gmail.com', 'Tarea cercana', `La tarea "${task.title}" tiene una fecha límite cercana.`);
             await sendWhatsAppMessage('+541169754773', `La tarea "${task.title}" tiene una fecha límite cercana.`);
@@ -18,8 +18,8 @@ const scheduledTask = async () => {
     }
 };
 
-// Ejecutar la tarea programada al iniciar la aplicación
+// Execute the scheduled task when the application starts
 scheduledTask();
 
-// Programar la tarea para ejecutarse a la medianoche
+// Schedule the task to run at midnight
 cron.schedule('0 0 * * *', scheduledTask);

@@ -22,6 +22,10 @@ module.exports = {
           isEmail: true
         }
       },
+      phoneNumber: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
       password: {
         type: Sequelize.STRING,
         allowNull: false

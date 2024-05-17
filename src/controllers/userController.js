@@ -5,41 +5,41 @@ const jwt = require('jsonwebtoken');
 
 const userController = {
   register: async (req, res) => {
-    const t = await db.sequelize.transaction(); // Iniciar transacción
+    const t = await db.sequelize.transaction(); // Start transaction
 
     try {
       const { username, email, password } = req.body;
 
-      // Verificar si el usuario o el correo ya existen en la base de datos
+      // Check if the username or email already exists in the database
       const existingUser = await db.User.findOne({
         where: {
           [db.Sequelize.Op.or]: [{ username }, { email }],
         },
-        transaction: t, // Asociar transacción
+        transaction: t, // Associate transaction
       });
 
       if (existingUser) {
-        await t.rollback(); // Rollback en caso de error
-        return res.status(400).json({ message: 'El usuario o el correo electrónico ya están en uso.' });
+        await t.rollback(); // Rollback in case of error
+        return res.status(400).json({ message: 'The username or email is already in use.' });
       }
 
-      // Crear un hash de la contraseña
+      // Create a hash of the password
       const hashedPassword = await bcrypt.hash(password, 10);
 
-      // Crear el nuevo usuario
+      // Create the new user
       const newUser = await db.User.create({
         username,
         email,
         password: hashedPassword,
-      }, { transaction: t }); // Asociar transacción
+      }, { transaction: t }); // Associate transaction
 
-      await t.commit(); // Commit de la transacción
+      await t.commit(); // Commit the transaction
 
-      res.status(201).json({ message: 'Usuario registrado exitosamente.', user: newUser });
+      res.status(201).json({ message: 'User registered successfully.', user: newUser });
     } catch (error) {
-      console.error('Error al registrar usuario:', error);
-      await t.rollback(); // Rollback en caso de error
-      res.status(500).json({ message: 'Error al registrar usuario. Por favor, inténtelo de nuevo más tarde.' });
+      console.error('Error registering user:', error);
+      await t.rollback(); // Rollback in case of error
+      res.status(500).json({ message: 'Error registering user. Please try again later.' });
     }
   },
 
@@ -47,27 +47,27 @@ const userController = {
     try {
       const { username, password } = req.body;
 
-      // Buscar el usuario en la base de datos
+      // Find the user in the database
       const user = await db.User.findOne({ where: { username } });
 
       if (!user) {
-        return res.status(404).json({ message: 'Usuario no encontrado.' });
+        return res.status(404).json({ message: 'User not found.' });
       }
 
-      // Verificar la contraseña
+      // Verify the password
       const isPasswordValid = await bcrypt.compare(password, user.password);
 
       if (!isPasswordValid) {
-        return res.status(401).json({ message: 'Credenciales inválidas.' });
+        return res.status(401).json({ message: 'Invalid credentials.' });
       }
 
-      // Generar token de autenticación
+      // Generate authentication token
       const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-      res.status(200).json({ message: 'Inicio de sesión exitoso.', token });
+      res.status(200).json({ message: 'Login successful.', token });
     } catch (error) {
-      console.error('Error al iniciar sesión:', error);
-      res.status(500).json({ message: 'Error al iniciar sesión. Por favor, inténtelo de nuevo más tarde.' });
+      console.error('Error logging in:', error);
+      res.status(500).json({ message: 'Error logging in. Please try again later.' });
     }
   },
 };

@@ -50,7 +50,6 @@ module.exports = (sequelize, dataTypes) => {
     
     Task.associate = function(models) {
         Task.belongsTo(models.User, {
-            as: "user",
             foreignKey: {name: "userId", type: dataTypes.INTEGER}
         })
     }

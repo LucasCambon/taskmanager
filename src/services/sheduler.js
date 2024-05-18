@@ -9,8 +9,8 @@ const scheduledTask = async () => {
 
         // Iterate over the tasks and send notifications
         for (const task of tasks) {
-            await sendEmail('lucas.j.cambon@gmail.com', 'Tarea cercana', `La tarea "${task.title}" tiene una fecha límite cercana.`);
-            await sendWhatsAppMessage('+541169754773', `La tarea "${task.title}" tiene una fecha límite cercana.`);
+            await sendEmail(user.email, 'Tarea cercana', `Recordatorio: La tarea "${task.title}" tiene una fecha límite ${task.dueDate}.`);
+            await sendWhatsAppMessage(user.phoneNumber, `Recordatorio: La tarea "${task.title}" tiene una fecha límite ${task.dueDate}.`);
             await markTaskAsNotified(task.id);
         }
     } catch (error) {

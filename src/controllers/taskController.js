@@ -3,37 +3,38 @@ const db = require("../database/models");
 const taskController = {
     getAllTasks: async (req, res) => {
         try {
-            // Retrieve all tasks from the database
-            const tasks = await db.Task.findAll();
-            // If no tasks were found, send a 404 response
+            // Get all tasks from the database that belong to the authenticated user
+            const tasks = await db.Task.findAll({
+                where: {
+                    userId: req.user.id // Only get tasks for the authenticated user
+                }
+            });
             if (!tasks || tasks.length === 0) {
                 return res.status(404).json({ message: 'No tasks found.' });
             }
-            // Send the found tasks as a response to the client
             res.status(200).json(tasks);
         } catch (error) {
-            // If an error occurs during the database query, send a 500 response
-            console.error('Error retrieving tasks:', error);
-            res.status(500).json({ message: 'Error retrieving tasks. Please try again later.' });
+            console.error('Error getting tasks:', error);
+            res.status(500).json({ message: 'Error getting tasks. Please try again later.' });
         }
     },
 
     getTaskById: async (req, res) => {
         try {
-            // Get the task ID from the request parameters
             const taskId = req.params.id;
-            // Find the specific task
-            const task = await db.Task.findByPk(taskId);
-            // If the task is not found, send a 404 response
+            const task = await db.Task.findOne({
+                where: {
+                    id: taskId,
+                    userId: req.user.id // Ensure the task belongs to the authenticated user
+                }
+            });
             if (!task) {
-                return res.status(404).json({ message: 'Task not found with the provided ID.' });
+                return res.status(404).json({ message: 'Task not found with the provided ID or you are not authorized to view it.' });
             }
-            // Send the found task as a response to the client
             res.status(200).json(task);
         } catch (error) {
-            // If an error occurs during the database query, send a 500 response
-            console.error('Error retrieving task:', error);
-            res.status(500).json({ message: 'Error retrieving task. Please try again later.' });
+            console.error('Error getting task:', error);
+            res.status(500).json({ message: 'Error getting task. Please try again later.' });
         }
     },
 

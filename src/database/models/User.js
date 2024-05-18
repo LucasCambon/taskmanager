@@ -45,7 +45,6 @@ module.exports = (sequelize, dataTypes) => {
 
     User.associate = function(models) {
         User.hasMany(models.Task, {
-            as: "tasks",
             foreignKey: "userId"
         })
     }

@@ -21,7 +21,11 @@ async function getNearbyTasks() {
                     [db.Sequelize.Op.between]: [currentDate, deadlineDate] // Tasks with a deadline within the next 3 days
                 },
                 notified: false // Only tasks that have not been notified previously
-            }
+            },
+            include: [{
+                model: db.User, // Assuming your User model is associated with Task
+                attributes: ['email', 'phoneNumber'] // Select the required fields from the User model
+            }]
         });
 
         return tasks;

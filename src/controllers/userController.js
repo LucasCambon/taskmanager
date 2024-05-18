@@ -1,13 +1,14 @@
 const db = require("../database/models");
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+require("dotenv")
 
 const userController = {
   register: async (req, res) => {
     const t = await db.sequelize.transaction(); // Start transaction
 
     try {
-      const { username, email, password } = req.body;
+      const { username, email, password, phoneNumber } = req.body;
 
       // Check if the username or email already exists in the database
       const existingUser = await db.User.findOne({
@@ -30,6 +31,7 @@ const userController = {
         username,
         email,
         password: hashedPassword,
+        phoneNumber
       }, { transaction: t }); // Associate transaction
 
       await t.commit(); // Commit the transaction
@@ -67,6 +69,26 @@ const userController = {
     } catch (error) {
       console.error('Error logging in:', error);
       res.status(500).json({ message: 'Error logging in. Please try again later.' });
+    }
+  },
+
+  logout: async (req, res) => {
+    const token = req.header('Authorization').replace('Bearer ', '');
+
+    try {
+      const decoded = jwt.decode(token);
+      const expiryDate = new Date(decoded.exp * 1000); // Convert expiry time from seconds to milliseconds
+
+      await db.BlacklistedToken.create({
+        token,
+        expiryDate,
+        userId: decoded.userId // Use userId from the decoded token
+      });
+
+      res.status(200).json({ message: 'User successfully logged out.' });
+    } catch (error) {
+      console.error('Logout error:', error);
+      res.status(500).json({ message: 'Logout failed. Please try again later.' });
     }
   },
 };

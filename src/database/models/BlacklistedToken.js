@@ -1,30 +1,18 @@
 module.exports = (sequelize, dataTypes) => {
-    let alias = 'User';
+    let alias = 'BlacklistedToken';
     let cols = {
         id: {
             type: dataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true
         },
-        username: {
+        token: {
             type: dataTypes.STRING,
             allowNull: false,
             unique: true
         },
-        email: {
-            type: dataTypes.STRING,
-            allowNull: false,
-            unique: true,
-            validate: {
-                isEmail: true
-            }
-        },
-        phoneNumber: {
-            type: dataTypes.STRING,
-            allowNull: false
-        },
-        password: {
-            type: dataTypes.STRING,
+        expiryDate: {
+            type: dataTypes.DATE,
             allowNull: false
         },
         deletedAt: {
@@ -38,23 +26,20 @@ module.exports = (sequelize, dataTypes) => {
         }
     };
     let config = {
-        tableName: "users",
+        tableName: "blacklisted_tokens",
         timestamps: true,
         paranoid: true,
         deletedAt: 'deletedAt',
         createdAt: 'createdAt',
         updatedAt: 'updatedAt'
     }
-    const User = sequelize.define(alias, cols, config); 
+    const BlacklistedToken = sequelize.define(alias, cols, config); 
 
-    User.associate = function(models) {
-        User.hasMany(models.Task, {
-            foreignKey: "userId"
-        })
-        User.hasMany(models.BlacklistedToken, {
+    BlacklistedToken.associate = function(models) {
+        BlacklistedToken.belongsTo(models.User, {
             foreignKey: "userId"
         })
     }
 
-    return User
+    return BlacklistedToken
 };

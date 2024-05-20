@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "node --env-file=.env --watch ./src/app.js"
+    "dev": "node --env-file=.env --watch ./src/app.js",
+    "test": "cross-env NODE_ENV=test jest --detectOpenHandles"
   },
   "keywords": [],
   "author": "",
@@ -23,8 +24,11 @@
     "passport-local": "^1.0.0",
     "pg": "^8.11.5",
     "sequelize": "^6.37.3",
-    "supertest": "^7.0.0",
     "twilio": "^5.0.4",
     "winston": "^3.13.0"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "supertest": "^7.0.0"
   }
 }

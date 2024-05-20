@@ -20,7 +20,7 @@ describe('BlacklistedToken Model', () => {
     test('Find a blacklisted token by token value', async () => {
         const tokenValue = 'sample_token_123';
         const blacklistedToken = await db.BlacklistedToken.findOne({ where: { token: tokenValue } });
-
+        console.log(blacklistedToken)
         expect(blacklistedToken).not.toBeNull();
         expect(blacklistedToken.token).toBe(tokenValue);
     });

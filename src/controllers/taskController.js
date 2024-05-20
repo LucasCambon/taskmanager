@@ -3,10 +3,10 @@ const db = require("../database/models");
 const taskController = {
     getAllTasks: async (req, res) => {
         try {
-            // Get all tasks from the database that belong to the authenticated user
+             // Get all tasks from the database that belong to the authenticated user
             const tasks = await db.Task.findAll({
                 where: {
-                    userId: req.user.id // Only get tasks for the authenticated user
+                    userId: req.user.userId // Only get tasks for the authenticated user
                 }
             });
             if (!tasks || tasks.length === 0) {
@@ -25,7 +25,7 @@ const taskController = {
             const task = await db.Task.findOne({
                 where: {
                     id: taskId,
-                    userId: req.user.id // Ensure the task belongs to the authenticated user
+                    userId: req.user.userId // Ensure the task belongs to the authenticated user
                 }
             });
             if (!task) {
@@ -45,7 +45,7 @@ const taskController = {
         try {
             // Get the data from the request
             const { title, description, dueDate, status } = req.body;
-            const userId = req.userId; // Get the userId from the req object
+            const userId = req.user.userId; // Get the userId from the req object
 
             // Create the task in the database
             const newTask = await db.Task.create(

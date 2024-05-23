@@ -1,8 +1,9 @@
 module.exports = {
-    // Unit tests
-    testMatch: ["<rootDir>/tests/spec/**/*.spec.js"],
-    // Integration tests
-    //testMatch: ["<rootDir>/tests/integration/**/*.test.js"],
+    // Unit tests and Integration tests
+    testMatch: [
+      "<rootDir>/tests/spec/**/*.spec.js",
+      "<rootDir>/tests/integration/**/*.spec.js"
+    ],
     
     // Directories to ignore from testing
     testPathIgnorePatterns: [

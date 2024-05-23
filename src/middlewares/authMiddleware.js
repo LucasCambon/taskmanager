@@ -16,13 +16,10 @@ const authenticateToken = async (req, res, next) => {
     }
 
     // Verify the token
-    console.log(token)
-    console.log(process.env.JWT_SECRET)
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
     next();
   } catch (error) {
-    console.log(error)
     console.error('Authentication error:', error);
     res.status(401).json({ message: 'Invalid token. Please log in again.' });
   }

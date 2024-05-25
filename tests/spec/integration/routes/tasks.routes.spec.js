@@ -211,7 +211,7 @@ describe('Tasks Routes', () => {
             jest.spyOn(db.Task, 'create').mockImplementation(() => {
                 throw new Error('Error creating task. Please try again later.');
             });
-            // Mock the post function of /api/users/register route to return a 500 error
+            // Mock the post function of /api/tasks/create route to return a 500 error
             app.post('/api/tasks/create', (req, res) => {
                 res.status(500).json({ message: 'Error creating task. Please try again later.' });
             });
@@ -232,7 +232,7 @@ describe('Tasks Routes', () => {
             jest.spyOn(db.Task, 'findByPk').mockImplementation(() => {
                 throw new Error('Error updating task. Please try again later.');
             });
-            // Mock the post function of /api/users/register route to return a 500 error
+            // Mock the post function of /api/tasks/edit/:id route to return a 500 error
             app.put(`/api/tasks/edit/${idTask}`, (req, res) => {
                 res.status(500).json({ message: 'Error updating task. Please try again later.' });
             });
@@ -253,7 +253,7 @@ describe('Tasks Routes', () => {
             jest.spyOn(db.Task, 'findByPk').mockImplementation(() => {
                 throw new Error('Error deleting task. Please try again later.');
             });
-            // Mock the post function of /api/users/register route to return a 500 error
+            // Mock the post function of /api/tasks/delete/:id route to return a 500 error
             app.delete(`/api/tasks/delete/${idTask}`, (req, res) => {
                 res.status(500).json({ message: 'Error deleting task. Please try again later.' });
             });

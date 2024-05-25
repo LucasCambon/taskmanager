@@ -94,7 +94,13 @@ describe('Tasks Routes', () => {
             status: 'pending',
         });
         const updatedTaskData = { title: 'Updated title' };
-
+        const response404 = await request(app)
+            .put(`/api/tasks/edit/${task.id+1}`)
+            .set('Authorization', `Bearer ${token}`)
+            .send(updatedTaskData)
+            .expect('Content-Type', /json/)
+            .expect(404);
+        expect(response404.body).toEqual({ message: 'Task not found with the provided ID.' });
         const response = await request(app)
             .put(`/api/tasks/edit/${task.id}`)
             .set('Authorization', `Bearer ${token}`)
@@ -112,6 +118,12 @@ describe('Tasks Routes', () => {
             dueDate: '2024-05-31',
             status: 'pending',
         });
+        const response404 = await request(app)
+            .delete(`/api/tasks/delete/${task.id+10}`)
+            .set('Authorization', `Bearer ${token}`)
+            .expect(404);
+        expect(response404.body).toEqual({ message: 'Task not found with the provided ID.'  });
+
         await request(app)
             .delete(`/api/tasks/delete/${task.id}`)
             .set('Authorization', `Bearer ${token}`)
@@ -119,5 +131,138 @@ describe('Tasks Routes', () => {
 
         const foundTask = await db.Task.findByPk(task.id);
         expect(foundTask).toBeNull();
+    });
+
+    describe('Task Controller 500 error', () => {
+
+        let token;
+        let idTask;
+        beforeAll(async () => {
+            // Register and login a user to get a token
+            await request(app)
+                .post('/api/users/register')
+                .send({
+                    username: 'testuserTaskerror',
+                    email: 'testuserTaskerror@example.com',
+                    password: 'Test@1234',
+                    phoneNumber: '+14579514657'
+                });
+
+            const loginResponse = await request(app)
+                .post('/api/users/login')
+                .send({
+                    username: 'testuserTaskerror',
+                    password: 'Test@1234'
+                });
+            
+            token = loginResponse.body.token;
+
+            const taskData = {
+                title: 'New Task',
+                description: 'This is a new task',
+                dueDate: '2024-05-31',
+                status: 'pending', 
+            };
+            const response = await request(app)
+                .post('/api/tasks/create')
+                .set('Authorization', `Bearer ${token}`)
+                .send(taskData)
+                .expect('Content-Type', /json/)
+                .expect(201);
+            idTask = response.body.id
+        });
+        
+        test('should handle error 500 in get tasks', async () => {
+            jest.spyOn(db.Task, 'findAll').mockImplementation(() => {
+                throw new Error('Error getting tasks. Please try again later.');
+            });
+            // Mock the post function of /api/tasks route to return a 500 error
+            app.get('/api/tasks', (req, res) => {
+                res.status(500).json({ message: 'Error getting tasks. Please try again later.' });
+            });
+    
+            // Make a request to /api/tasks route
+            const response = await request(app)
+                .get('/api/tasks')
+                .set('Authorization', `Bearer ${token}`);
+            // Verify the response has the expected status code and message
+            expect(response.status).toBe(500);
+            expect(response.body).toEqual({ message: 'Error getting tasks. Please try again later.' });
+        });
+
+        test('should handle error 500 in get task by id', async () => {
+            jest.spyOn(db.Task, 'findOne').mockImplementation(() => {
+                throw new Error('Error getting task. Please try again later.');
+            });
+            // Mock the post function of /api/tasks/:id route to return a 500 error
+            app.post(`/api/tasks/${idTask}`, (req, res) => {
+                res.status(500).json({ message: 'Error getting task. Please try again later.' });
+            });
+    
+            const response = await request(app)
+                .get(`/api/tasks/${idTask}`)
+                .set('Authorization', `Bearer ${token}`);
+            // Verify the response has the expected status code and message
+            expect(response.status).toBe(500);
+            expect(response.body).toEqual({ message: 'Error getting task. Please try again later.' });
+        });
+
+        test('should handle error 500 in create task', async () => {
+            jest.spyOn(db.Task, 'create').mockImplementation(() => {
+                throw new Error('Error creating task. Please try again later.');
+            });
+            // Mock the post function of /api/users/register route to return a 500 error
+            app.post('/api/tasks/create', (req, res) => {
+                res.status(500).json({ message: 'Error creating task. Please try again later.' });
+            });
+            const response = await request(app)
+                .post('/api/tasks/create')
+                .send({
+                    title: 'New Task',
+                    description: 'This is a new task',
+                    dueDate: '2024-05-31',
+                    status: 'pending', 
+                })
+                .set('Authorization', `Bearer ${token}`);
+                expect(response.status).toBe(500);
+                expect(response.body).toEqual({ message: 'Error creating task. Please try again later.' });
+        });
+
+        test('should handle error 500 in update task', async () => {
+            jest.spyOn(db.Task, 'findByPk').mockImplementation(() => {
+                throw new Error('Error updating task. Please try again later.');
+            });
+            // Mock the post function of /api/users/register route to return a 500 error
+            app.put(`/api/tasks/edit/${idTask}`, (req, res) => {
+                res.status(500).json({ message: 'Error updating task. Please try again later.' });
+            });
+            const response = await request(app)
+                .put(`/api/tasks/edit/${idTask}`)
+                .send({
+                    title: 'New Task',
+                    description: 'This is a new task',
+                    dueDate: '2024-05-31',
+                    status: 'pending', 
+                })
+                .set('Authorization', `Bearer ${token}`);
+                expect(response.status).toBe(500);
+                expect(response.body).toEqual({ message: 'Error updating task. Please try again later.' });
+        });
+
+        test('should handle error 500 in delete task', async () => {
+            jest.spyOn(db.Task, 'findByPk').mockImplementation(() => {
+                throw new Error('Error deleting task. Please try again later.');
+            });
+            // Mock the post function of /api/users/register route to return a 500 error
+            app.delete(`/api/tasks/delete/${idTask}`, (req, res) => {
+                res.status(500).json({ message: 'Error deleting task. Please try again later.' });
+            });
+            const response = await request(app)
+                .delete(`/api/tasks/delete/${idTask}`)
+                .set('Authorization', `Bearer ${token}`);
+                expect(response.status).toBe(500);
+                expect(response.body).toEqual({ message: 'Error deleting task. Please try again later.' });
+        });
+        
     });
 });

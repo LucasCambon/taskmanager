@@ -33,6 +33,16 @@ describe('Integration Tests', () => {
         expect(response.status).toBe(200);
         const token = response.body.token;
 
+        response = await request(app)
+            .get('/api/tasks')
+            .set('Authorization', `Bearer ${token}`)
+            .expect(404);
+
+        response = await request(app)
+            .get('/api/tasks/1')
+            .set('Authorization', `Bearer ${token}`)
+            .expect(404);
+
         // Create a new task
         const taskData = {
             title: 'Integration Task',
@@ -47,5 +57,11 @@ describe('Integration Tests', () => {
             .expect(201);
         expect(response.body).toHaveProperty('id');
         expect(response.body.title).toBe(taskData.title);
+        
+        response = await request(app)
+            .get('/api/tasks')
+            .set('Authorization', `Bearer ${token}`)
+            .expect(200);
+            
     });
 });

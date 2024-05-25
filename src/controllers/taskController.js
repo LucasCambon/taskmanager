@@ -100,13 +100,11 @@ const taskController = {
     // Method to delete an existing task
     deleteTask: async (req, res) => {
         const taskId = req.params.id;
-
         // Start a transaction
         const t = await db.sequelize.transaction();
 
         try {
             const task = await db.Task.findByPk(taskId, { transaction: t });
-
             if (!task) {
                 await t.rollback();
                 return res.status(404).json({ message: 'Task not found with the provided ID.' });
@@ -114,10 +112,8 @@ const taskController = {
 
             // Delete the task from the database within the transaction
             await task.destroy({ transaction: t });
-
             // Commit the transaction
             await t.commit();
-
             res.status(200).json({ message: 'Task deleted successfully.' });
         } catch (error) {
             // Rollback the transaction in case of error

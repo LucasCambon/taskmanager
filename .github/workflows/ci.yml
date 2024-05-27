@@ -41,14 +41,6 @@ jobs:
       - name: Run tests
         run: npm run test
 
-      - name: Generate coverage report
-        run: npm run coverage
-
-      - name: Upload coverage to Coveralls
-        uses: coverallsapp/github-action@v2
-        with:
-          github-token: ${{ secrets.COVER_ALL }}
-          path-to-lcov: ./coverage/lcov.info
 
   deploy:
     needs: build

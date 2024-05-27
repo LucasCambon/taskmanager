@@ -1,0 +1,34 @@
+services:
+- type: web
+  name: taskmanager
+  runtime: node
+  envVars:
+    - key: NODE_ENV
+      value: production
+    - key: DB_CONNECTION
+      value: $DB_CONNECTION
+    - key: DB_USER
+      value: $DB_USER
+    - key: DB_PASS
+      value: $DB_PASS
+    - key: DB_HOST
+      value: $DB_HOST
+    - key: DB_PORT
+      value: $DB_PORT
+    - key: DB_DATABASE
+      value: $DB_DATABASE
+    - key: USE_DB
+      value: $USE_DB
+    - key: TWILIO_ACCOUNT_SID
+      value: $TWILIO_ACCOUNT_SID
+    - key: TWILIO_AUTH_TOKEN
+      value: $TWILIO_AUTH_TOKEN
+    - key: TWILIO_NUMBER
+      value: $TWILIO_NUMBER
+    - key: GOOGLE_CLIENT_ID
+      value: $GOOGLE_CLIENT_ID
+    - key: GOOGLE_CLIENT_SECRET
+      value: $GOOGLE_CLIENT_SECRET
+    - key: JWT_SECRET
+      value: $JWT_SECRET
+  startCommand: npm start

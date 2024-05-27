@@ -62,7 +62,7 @@ jobs:
       run: |
         ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
           docker pull $DOCKER_USERNAME/myapp:latest
-          cd /home/user/myapp  # Reemplaza esto con el directorio real en tu servidor
+          cd /home/user/myapp
           docker-compose up -d
         EOF
       env:

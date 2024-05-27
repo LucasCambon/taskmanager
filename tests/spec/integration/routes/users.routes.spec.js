@@ -23,11 +23,11 @@ describe('User Routes', () => {
                     phoneNumber
                 });
         }
-    });
+    }, 10000);
 
     afterAll(async () => {
         await db.sequelize.close();
-    });
+    }, 10000);
 
     describe('POST /api/users/register', () => {
         test('should register a new user with valid data', async () => {

@@ -4,7 +4,7 @@ describe('User Model', () => {
 
     beforeAll(async () => {
       await db.sequelize.sync({ force: true });
-    }), 5000;
+    }, 5000);
 
     // Clean up tasks after each test
     afterEach(async () => {

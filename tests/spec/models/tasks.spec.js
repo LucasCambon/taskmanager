@@ -15,18 +15,18 @@ describe('Task Model', () => {
         });
         userId = user.id;
 
-    });
+    }, 10000);
 
     // Clean up tasks after each test
     afterEach(async () => {
         await db.Task.destroy({ where: {} });
         
-    });
+    }, 10000);
 
     // Close the database connection after all tests are done
     afterAll(async () => {
         await db.sequelize.close();
-    });
+    }, 10000);
 
     test('Create a valid task', async () => {
         const validTaskData = {

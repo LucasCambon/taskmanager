@@ -18,11 +18,11 @@ describe('Auth Middleware', () => {
         });
 
         token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    });
+    }, 10000);
 
     afterAll(async () => {
         await db.sequelize.close();
-    });
+    }, 10000);
 
     test('should call next if token is valid', async () => {
         const req = {

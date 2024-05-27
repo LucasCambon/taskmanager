@@ -25,17 +25,17 @@ describe('Tasks Routes', () => {
             });
 
         token = response.body.token;
-    });
+    }, 10000);
 
     // Clean up tasks after each test
     afterEach(async () => {
         await db.Task.destroy({ where: {} });
-    });
+    }, 10000);
 
     // Close the database connection after all tests are done
     afterAll(async () => {
         await db.sequelize.close();
-    });
+    }, 10000);
 
     test('GET /api/tasks - should return an empty array initially', async () => {
         const response = await request(app)

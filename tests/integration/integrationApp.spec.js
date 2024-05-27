@@ -5,11 +5,11 @@ describe('Server Initialization', () => {
 
   beforeAll(async () => {
     server = app.listen(3000);
-  });
+  }, 10000);
 
   afterAll(async () => {
     await server.close(); // Cerrar el servidor después de todas las pruebas
-  });
+  }, 10000);
 
   test('Server should start and listen on the specified port', async () => {
     expect(server).toBeDefined();

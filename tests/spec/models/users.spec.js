@@ -4,17 +4,17 @@ describe('User Model', () => {
 
     beforeAll(async () => {
       await db.sequelize.sync({ force: true });
-    }), 10000;
+    }), 5000;
 
     // Clean up tasks after each test
     afterEach(async () => {
       await db.User.destroy({ where: {} }); 
-    }, 10000);
+    }, 5000);
 
     // Close the database connection after all tests are done
     afterAll(async () => {
       await db.sequelize.close();
-    }, 10000);
+    }, 5000);
 
     test('should create a valid user', async () => {
       const userData = {

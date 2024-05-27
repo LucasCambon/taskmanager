@@ -5,11 +5,11 @@ const db = require('../../src/database/models');
 describe('Integration Tests', () => {
     beforeAll(async () => {
         await db.sequelize.sync({ force: true });
-    }, 10000);
+    }, 5000);
 
     afterAll(async () => {
         await db.sequelize.close();
-    }, 10000);
+    }, 5000);
     test('Register, Login, and Create Task', async () => {
         // Register a new user
         let response = await request(app)

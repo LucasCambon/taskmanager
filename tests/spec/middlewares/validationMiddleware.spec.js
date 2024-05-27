@@ -27,17 +27,17 @@ describe('Validation Middleware', () => {
             });
 
         token = response.body.token;
-    }, 10000);
+    }, 5000);
     // Clean up tasks after each test
     afterEach(async () => {
         await db.Task.destroy({ where: {} });
         await db.User.destroy({ where: {} });
-    }, 10000);
+    }, 5000);
 
     // Close the database connection after all tests are done
     afterAll(async () => {
         await db.sequelize.close();
-    }, 10000);
+    }, 5000);
 
     test('should return 400 if username is missing or invalid in registration', async () => {
         const response = await request(app)

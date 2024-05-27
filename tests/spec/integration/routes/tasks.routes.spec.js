@@ -25,17 +25,17 @@ describe('Tasks Routes', () => {
             });
 
         token = response.body.token;
-    }, 10000);
+    }, 5000);
 
     // Clean up tasks after each test
     afterEach(async () => {
         await db.Task.destroy({ where: {} });
-    }, 10000);
+    }, 5000);
 
     // Close the database connection after all tests are done
     afterAll(async () => {
         await db.sequelize.close();
-    }, 10000);
+    }, 5000);
 
     test('GET /api/tasks - should return an empty array initially', async () => {
         const response = await request(app)
@@ -170,7 +170,7 @@ describe('Tasks Routes', () => {
                 .expect('Content-Type', /json/)
                 .expect(201);
             idTask = response.body.id
-        });
+        },5000);
         
         test('should handle error 500 in get tasks', async () => {
             jest.spyOn(db.Task, 'findAll').mockImplementation(() => {

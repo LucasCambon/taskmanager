@@ -8,16 +8,16 @@ describe('Database Initialization', () => {
     beforeAll(() => {
         // Save the original state of environment variables
         originalEnv = { ...process.env };
-    }, 10000);
+    }, 5000);
 
     afterAll(() => {
         // Restore the original state of environment variables
         process.env = originalEnv;
-    }, 10000);
+    }, 5000);
 
     beforeEach(() => {
         jest.resetModules(); // Clear the module cache before each test
-    }, 10000);
+    }, 5000);
 
     test('should create Sequelize connection using environment variable', () => {
         process.env.NODE_ENV = 'development';

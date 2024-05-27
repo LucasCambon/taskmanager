@@ -23,11 +23,11 @@ describe('User Routes', () => {
                     phoneNumber
                 });
         }
-    }, 10000);
+    }, 5000);
 
     afterAll(async () => {
         await db.sequelize.close();
-    }, 10000);
+    }, 5000);
 
     describe('POST /api/users/register', () => {
         test('should register a new user with valid data', async () => {
@@ -145,7 +145,7 @@ describe('User Routes', () => {
                 });
             
             token = loginResponse.body.token;
-        });
+        },5000);
 
         test('should log out a logged-in user', async () => {
             const response = await request(app)
@@ -188,7 +188,7 @@ describe('User Routes', () => {
                 });
             
             token = loginResponse.body.token;
-        });
+        },5000);
         
         test('should handle error 500 in register route', async () => {
             jest.spyOn(db.User, 'findOne').mockImplementation(() => {

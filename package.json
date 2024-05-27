@@ -5,7 +5,11 @@
   "main": "index.js",
   "scripts": {
     "dev": "node --env-file=.env --watch ./src/app.js",
-    "test": "cross-env NODE_ENV=test jest --coverage --detectOpenHandles"
+    "test": "cross-env NODE_ENV=test jest --coverage --detectOpenHandles",
+    "start": "node ./src/app.js",
+    "migrate": "sequelize db:migrate",
+    "migrate:undo": "sequelize db:migrate:undo",
+    "migrate:all": "sequelize db:migrate:all"
   },
   "keywords": [],
   "author": "",

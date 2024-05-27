@@ -27,28 +27,28 @@ jobs:
       NODE_ENV: production
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '20.13.1'
+      - name: Set up Node.js (if required)
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'  # Or a specific patch version like '16.17.0'
 
-    - name: Install dependencies
-      run: npm install
+      - name: Install dependencies
+        run: npm install
 
-    - name: Run tests
-      run: npm run test
+      - name: Run tests
+        run: npm run test
 
-    - name: Generate coverage report
-      run: npm run coverage
+      - name: Generate coverage report
+        run: npm run coverage
 
-    - name: Upload coverage to Coveralls
-      uses: coverallsapp/github-action@v2
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        path-to-lcov: ./coverage/lcov.info
+      - name: Upload coverage to Coveralls
+        uses: coverallsapp/github-action@v2
+        with:
+          github-token: ${{ secrets.COVER_ALL }}
+          path-to-lcov: ./coverage/lcov.info
 
   deploy:
     needs: build

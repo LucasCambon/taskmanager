@@ -31,4 +31,4 @@ services:
       value: $GOOGLE_CLIENT_SECRET
     - key: JWT_SECRET
       value: $JWT_SECRET
-  startCommand: npm start
+  dockerfilePath: Dockerfile

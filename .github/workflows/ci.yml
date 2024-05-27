@@ -38,6 +38,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Migrations
+        run: npx sequelize-cli db:migrate
+
       - name: Run tests
         run: npm run test
 

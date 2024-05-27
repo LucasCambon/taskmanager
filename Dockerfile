@@ -10,9 +10,6 @@ COPY package*.json ./
 # Instalar dependencias
 RUN npm install
 
-# Ejecutar migraciones
-RUN npx sequelize-cli db:migrate
-
 # Copiar el resto de la aplicación
 COPY . .
 

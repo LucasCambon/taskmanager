@@ -5,6 +5,11 @@ const authMiddleware = require('../middlewares/authMiddleware');
 const { userValidationRules } = require('../middlewares/validationRules');
 const validate = require('../middlewares/dynamicValidation');
 
+router.post('/register', validate(userValidationRules.register), userController.register);
+router.post('/login', validate(userValidationRules.login), userController.login);
+router.post('/logout', authMiddleware, userController.logout);
+
+
 /**
  * @swagger
  * tags:
@@ -89,8 +94,6 @@ const validate = require('../middlewares/dynamicValidation');
  *       500:
  *         description: Error logging out
  */
-router.post('/register', validate(userValidationRules.register), userController.register);
-router.post('/login', validate(userValidationRules.login), userController.login);
-router.post('/logout', authMiddleware, userController.logout);
+
 
 module.exports = router;

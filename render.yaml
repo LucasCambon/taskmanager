@@ -1,7 +1,7 @@
 services:
 - type: web
   name: taskmanager
-  runtime: node
+  runtime: docker
   envVars:
     - key: NODE_ENV
       value: production

@@ -31,6 +31,8 @@
     "sequelize": "^6.37.3",
     "sequelize-cli": "^6.6.2",
     "supertest": "^7.0.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.0",
     "twilio": "^5.0.4",
     "winston": "^3.13.0"
   }
